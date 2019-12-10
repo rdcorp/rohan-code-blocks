@@ -1,3 +1,4 @@
+<?php
 /**
  *  Agents audio demos
  */
@@ -81,3 +82,4 @@ function load_audios() {
 
 	wp_die(); // this is required to terminate immediately and return a proper response
 }
+?>
