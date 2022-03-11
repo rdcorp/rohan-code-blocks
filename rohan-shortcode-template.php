@@ -18,11 +18,15 @@ function func_rohan_shortcode($atts){
 		$variable1 = $atts["variable1"];
 		$variable2 = $atts["variable2"];
 		$variable3 = $atts["variable3"];
+	
+	ob_start();
+?>
 		
-		$out .= "Add your HTML / CSS / JS code here! ";
-		$out .= "And you can also embed a " . $variable . " here ";
-		$out .= 'use single quoted out for a <a href="#"> kind of HTML output where you can use a " .';
-		
+<!-- Add your HTML / CSS / JS code here! -->
+<!-- And you can also embed a " . $variable1 . " here " -->
+<?php
+	$out.= ob_get_contents();
+	ob_end_clean();
 	return $out;
 }
 add_shortcode("rohan_shortcode","func_rohan_shortcode");
