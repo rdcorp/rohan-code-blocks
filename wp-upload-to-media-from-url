@@ -1,0 +1,46 @@
+<?php
+/* WordPress - Upload media from url to Media Library */
+
+$url = $product['product_image'];
+$image_name = ;
+
+include_once( ABSPATH . 'wp-admin/includes/image.php' );
+$imageurl = $url;
+$imagetype = end(explode('/', getimagesize($imageurl)['mime']));
+
+if(!empty($image_name)){
+  $uniq_name = $image_name;
+}
+else {
+  $uniq_name = "";
+}
+
+if(!empty($uniq_name) && !empty($imagetype)){
+
+  $filename = $uniq_name.'.'.$imagetype;
+
+  $uploaddir = wp_upload_dir();
+  $uploadfile = $uploaddir['path'] . '/' . $filename;
+  $contents= file_get_contents($imageurl);
+  $savefile = fopen($uploadfile, 'w');
+  fwrite($savefile, $contents);
+  fclose($savefile);
+
+  $wp_filetype = wp_check_filetype(basename($filename), null );
+  $attachment = array(
+    'post_mime_type' => $wp_filetype['type'],
+    'post_title' => $filename,
+    'post_content' => '',
+    'post_status' => 'inherit'
+  );
+
+  $attach_id = wp_insert_attachment( $attachment, $uploadfile );
+  $imagenew = get_post( $attach_id );
+  $fullsizepath = get_attached_file( $imagenew->ID );
+  $attach_data = wp_generate_attachment_metadata( $attach_id, $fullsizepath );
+  wp_update_attachment_metadata( $attach_id, $attach_data ); 
+
+  // And finally assign featured image to post
+  set_post_thumbnail( $post_id, $attach_id );
+
+}
